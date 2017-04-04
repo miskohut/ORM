@@ -5,6 +5,7 @@ import metaorm.persistencemanager.PersistenceManagerImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.List;
 
 /**
  * Created by miskohut on 3.4.2017.
@@ -15,7 +16,9 @@ public class Main {
         try {
             PersistenceManagerImpl persistenceManager = new PersistenceManagerImpl(getConnection());
 
-            persistenceManager.save(new Auto(1, "Nissan", new Driver(1, "Miško")));
+
+            List<Object> objectList = persistenceManager.getAll((Class)Driver.class);
+            //Object object = persistenceManager.get(Auto.class, 1);
         } catch (PersistenceException e) {
             e.printStackTrace();
         }

@@ -20,4 +20,8 @@ public class Driver {
         this.id = id;
         this.name = name;
     }
+
+    public Driver() {
+
+    }
 }

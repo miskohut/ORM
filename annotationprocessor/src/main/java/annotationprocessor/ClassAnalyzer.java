@@ -2,7 +2,6 @@ package annotationprocessor;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -10,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class ClassAnalyzer {
@@ -115,7 +113,7 @@ public class ClassAnalyzer {
 
                 if (fieldData1 != null) {
 
-                    alters.add(("ALTER TABLE " + tableName + " ADD " + holder.getClassAnalyzer().getTableName() +
+                    alters.add(("ALTER TABLE " + tableName + " ADD " + holder.getClassAnalyzer().getTableName() + " " +
                             fieldData1.getType().toString() + " REFERENCES " + holder.getClassAnalyzer().getTableName() +
                             "(" + fieldData1.getColumnName() + ")").toUpperCase());
 

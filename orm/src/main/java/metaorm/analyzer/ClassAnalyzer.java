@@ -196,6 +196,7 @@ public class ClassAnalyzer {
         private String columnName;
         private boolean nullable;
         private int maxLength;
+        private boolean lazyLoad;
 
         public FieldData(Field field, Annotation annotation, Object type) {
             this.annotation = annotation;
@@ -217,6 +218,7 @@ public class ClassAnalyzer {
             if (annotation instanceof Column) {
                 Column column = (Column) annotation;
                 columnName = column.name();
+                lazyLoad = column.unique();
             }
             else {
                 Id id = (Id) annotation;
@@ -261,6 +263,10 @@ public class ClassAnalyzer {
             }
 
             return statement;
+        }
+
+        public boolean isLazyLoad() {
+            return lazyLoad;
         }
     }
 }
