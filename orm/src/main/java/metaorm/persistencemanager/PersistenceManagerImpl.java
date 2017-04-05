@@ -58,10 +58,19 @@ public class PersistenceManagerImpl implements PersistenceManager {
         try {
             Statement statement = connection.createStatement();
 
+            ClassAnalyzer classAnalyzer = new ClassAnalyzer(clazz);
+
             //get all ids from database
-            ResultSet resultSet = statement.executeQuery("SELECT ID FROM " + new ClassAnalyzer(clazz).getTableName());
-            while (resultSet.next()) {
-                objects.add(get(clazz, Integer.parseInt(resultSet.getString("ID"))));
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + classAnalyzer.getTableName());
+
+            //get ID field name
+            ClassAnalyzer.FieldData fieldData = Iterables.find(classAnalyzer.getColumns().values(), fieldData1 -> fieldData1.getAnnotation() instanceof Id, null);
+
+            if (fieldData != null) {
+
+                while (resultSet.next()) {
+                    objects.add(get(clazz, Integer.parseInt(resultSet.getString(fieldData.getColumnName()))));
+                }
             }
 
         } catch (SQLException e) {
@@ -97,11 +106,17 @@ public class PersistenceManagerImpl implements PersistenceManager {
         List<T> objects = new ArrayList<T>();
 
         try {
+            ClassAnalyzer classAnalyzer = new ClassAnalyzer(type.getClass());
+            ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM " + classAnalyzer.getTableName() + " WHERE " + fieldName + " = " + ((value instanceof String ) ? "'" + value.toString() + "'" : value.toString()));
 
-            ResultSet resultSet = connection.createStatement().executeQuery("SELECT ID FROM " + new ClassAnalyzer(type).getTableName() + " WHERE " + fieldName + " = " + ((value instanceof String ) ? "'" + value.toString() + "'" : value.toString()));
+            //get ID field name
+            ClassAnalyzer.FieldData fieldData = Iterables.find(classAnalyzer.getColumns().values(), fieldData1 -> fieldData1.getAnnotation() instanceof Id, null);
 
-            while (resultSet.next()) {
-                objects.add(get(type, Integer.parseInt(resultSet.getString("ID"))));
+            if (fieldData != null) {
+
+                while (resultSet.next()) {
+                    objects.add(get(type, Integer.parseInt(resultSet.getString(fieldData.getColumnName()))));
+                }
             }
 
         } catch (SQLException e) {
